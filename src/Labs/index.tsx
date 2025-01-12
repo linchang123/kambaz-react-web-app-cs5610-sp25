@@ -10,6 +10,7 @@ import Lab3 from "./Lab3";
 export default function Labs() {
   return (
     <div id="wd-labs">
+      <h1>Chang Lin - Section 1</h1>
       <h1>Labs</h1>
       {/* <Lab1 />
         {/* The Lab1 function is invoked with the HTML syntax <Lab1/>
