@@ -87,6 +87,13 @@ export default function AssignmentEditor() {
                     <AssignmentAvailability />
                 </td>
             </tr>
+            <tr>
+                <td colSpan={2} align="right">
+                    <hr/>
+                    <button>Cancel</button>
+                    <button>Save</button>
+                </td>
+            </tr>
         </table>
     </div>
 );}
