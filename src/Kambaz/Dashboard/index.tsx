@@ -66,15 +66,17 @@ export default function Dashboard() {
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
       <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2> <hr />
-      <div id="wd-dashboard-courses">
-        {
-            courses.map((course) => (
-                <Course courseName={course.courseName} 
-                courseNum={course.courseNum} 
-                courseTitle={course.courseTitle}
-                courseImgSrc={course.courseImgSrc}/>
-            ))
-        }
+      <div id="wd-dashboard-courses" className="row">
+        <div className="row row-cols-1 row-cols-md-5 g-4">
+            {
+                courses.map((course) => (
+                    <Course courseName={course.courseName} 
+                    courseNum={course.courseNum} 
+                    courseTitle={course.courseTitle}
+                    courseImgSrc={course.courseImgSrc}/>
+                ))
+            }
+        </div>
       </div>
     </div>
 );}
@@ -82,17 +84,19 @@ export default function Dashboard() {
 const Course = ({courseName, courseNum, courseTitle, courseImgSrc}: courseProps) => {
     var courseLink = "/Kambaz/Courses/" + String(courseNum) + "/Home";
     return (
-        <div className="wd-dashboard-course">
-          <Link to={courseLink}
-                className="wd-dashboard-course-link" >
-            <img src={courseImgSrc} width={200} />
-            <div>
-              <h5> {courseName} </h5>
-              <p className="wd-dashboard-course-title">
-                {courseTitle}  </p>
-              <button> Go </button>
+        <div className="wd-dashboard-course col" style={{width: "270px"}}>
+            <div className="card rounded-3 overflow-hidden">
+                <Link to={courseLink}
+                        className="wd-dashboard-course-link text-decoration-none text-dark" >
+                    <img src={courseImgSrc} width="100%" height={160} />
+                    <div className="card-body">
+                    <h5 className="wd-dashboard-course-title card-title"> {courseName} </h5>
+                    <p className="wd-dashboard-course-title card-text">
+                        {courseTitle}  </p>
+                    <button className="btn btn-primary"> Go </button>
+                    </div>
+                </Link>
             </div>
-          </Link>
         </div>
     );
 };
