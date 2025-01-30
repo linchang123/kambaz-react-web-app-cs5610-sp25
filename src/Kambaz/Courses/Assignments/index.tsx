@@ -6,34 +6,13 @@ import { FaFilePen } from "react-icons/fa6";
 import { Row, Col } from "react-bootstrap";
 import { IoEllipsisVertical } from "react-icons/io5";
 import { FaCheckCircle, FaCircle } from "react-icons/fa";
+import { useParams } from "react-router";
+import * as db from "../../Database";
 
 export default function Assignments() {
-    var assignments = [
-        {
-            assignmentTitle: "A1 - ENV + HTML",
-            assignmentAvailable: "May 6 at 12:00am",
-            assignmentDue: "May 13 at 11:59pm",
-            assignmentURL: "",
-            assignmentPoints: 0,
-            assignmentDetails: ""
-        },
-        {
-            assignmentTitle: "A2 - CSS + BOOTSTRAP",
-            assignmentAvailable: "May 13 at 12:00am",
-            assignmentDue: "May 20 at 11:59pm",
-            assignmentURL: "",
-            assignmentPoints: 0,
-            assignmentDetails: ""
-        },
-        {
-            assignmentTitle: "A3 - JAVASCRIPT + REACT",
-            assignmentAvailable: "May 20 at 12:00am",
-            assignmentDue: "May 27 at 11:59pm",
-            assignmentURL: "",
-            assignmentPoints: 0,
-            assignmentDetails: ""
-        }
-    ];
+    const { cid } = useParams();
+    const assignments = db.assignments;
+
     return (
       <div id="wd-assignments">
         <div className="text-nowrap">
@@ -46,7 +25,8 @@ export default function Assignments() {
             <AssignmentsControlButtons/>
         </div>
         <ul id="wd-assignment-list" className="list-group rounded-0">
-          {
+
+          {/* {
             assignments.map((assignment) => (
                 <Assignment assignmentTitle={assignment.assignmentTitle} 
                 assignmentAvailable={assignment.assignmentAvailable}
@@ -56,7 +36,17 @@ export default function Assignments() {
                 assignmentPoints={assignment.assignmentPoints}
                 />
             ))
-          }
+          } */}
+          {assignments
+          .filter((assignment: any) => assignment.course === cid)
+          .map((assignment: any) => (
+            <Assignment assignmentTitle={assignment.title} 
+            assignmentAvailable={"May 1 at 12:00am"} 
+            assignmentDue={"May 7 at 11:59pm"}
+            assignmentURL=""
+            assignmentDetails=""
+            assignmentPoints={100}/>
+          ))}
         </ul>
       </div>
   );}
