@@ -1,12 +1,34 @@
 import { FormGroup, FormLabel, FormControl, FormSelect, Row, Col } from "react-bootstrap";
+import { useParams } from "react-router";
+import assignmentProps from "./AssignmentProps";
+import * as db from "../../Database";
 
 export default function AssignmentEditor() {
+    const { cid, aid } = useParams();
+    const assignments = db.assignments;
+    for (const a of assignments) {
+        if (a.course === cid && a._id === aid) {
+            return (
+                <Editor assignmentTitle={a.title} 
+                      assignmentAvailable={a.availableDate} 
+                      assignmentDue={a.dueDate}
+                      assignmentURL=""
+                      assignmentDetails=""
+                      assignmentPoints={100}/>
+            );
+        }
+      }
+    
+    }
+
+const Editor = ({assignmentTitle, assignmentAvailable,
+    assignmentDue}: assignmentProps) => {
     var textAreaText = "The assignment is available online.\nSubmit a link to the landing page of your Web application running on Netlify.";
     return (
       <div id="wd-assignments-editor" className="ms-5">
         <FormGroup>
-            <FormLabel>Assignment Name</FormLabel>
-            <FormControl className="w-75 form-control" id="wd-name" value=" A1 - ENV + HTML"/>
+            <FormLabel>Assignment Title</FormLabel>
+            <FormControl className="w-75 form-control" id="wd-name" value={assignmentTitle}/>
             <FormControl className="my-3 w-75 form-control" as="textarea" id="wd-description" value={textAreaText} rows={5} />
         </FormGroup>
         <Row>
@@ -82,7 +104,25 @@ export default function AssignmentEditor() {
                 </FormSelect>
                 <label className="pt-4" htmlFor="wd-due-date">Due</label><br/>
                 <input type="date" className="w-100 rounded form-control" value="2024-05-13" id="wd-due-date"/><br/>
-                <AssignmentAvailability />
+                <div className="my-3">
+                    <Row>
+                        <Col>
+                            <label htmlFor="wd-available-from">Available From</label>
+                        </Col>
+                        <Col>
+                            <label htmlFor="wd-available-until">Until</label>
+                        </Col>
+                        
+                    </Row>
+                    <Row>
+                        <Col>
+                            <input className="w-100 rounded form-control" type="date" value={assignmentAvailable} id="wd-available-from"/>
+                        </Col>
+                        <Col>
+                            <input className="w-100 rounded form-control" type="date" value={assignmentDue} id="wd-available-until"/>
+                        </Col>
+                    </Row>
+                </div>
             </Col>
         </Row>
         <hr/>
@@ -91,28 +131,5 @@ export default function AssignmentEditor() {
             <button className="btn btn-lg btn-danger">Save</button>
         </div>
     </div>
-);}
-
-function AssignmentAvailability() {
-    return (
-        <div className="my-3">
-            <Row>
-                <Col>
-                    <label htmlFor="wd-available-from">Available From</label>
-                </Col>
-                <Col>
-                    <label htmlFor="wd-available-until">Until</label>
-                </Col>
-                
-            </Row>
-            <Row>
-                <Col>
-                    <input className="w-100 rounded form-control" type="date" value="2024-05-06" id="wd-available-from"/>
-                </Col>
-                <Col>
-                    <input className="w-100 rounded form-control" type="date" value="2024-05-20" id="wd-available-until"/>
-                </Col>
-            </Row>
-        </div>
-    );
+);
 }
