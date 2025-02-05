@@ -44,27 +44,27 @@ export default function AssignmentEditor() {
                         <legend className="col-form-label fw-bold">Online Entry Options</legend>
                         <div className="col-sm-10">
                             <div className="form-check my-2">
-                                <input className="form-check-input form-control" type="checkbox"
+                                <input className="form-check-input form-control me-2" type="checkbox"
                                     name="checkbox-entry-options" id="wd-text-entry" value="option1"/>
                                 <label className="form-check-label" htmlFor="wd-text-entry"> Text Entry </label> 
                             </div>
                             <div className="form-check my-2">
-                                <input className="form-check-input form-control" type="checkbox"
+                                <input className="form-check-input form-control me-2" type="checkbox"
                                     name="checkbox-entry-options" id="wd-website-url" value="option2" checked />
                                 <label className="form-check-label" htmlFor="wd-website-url"> Website URL </label> 
                             </div>
                             <div className="form-check my-2">
-                                <input className="form-check-input form-control" type="checkbox"
+                                <input className="form-check-input form-control me-2" type="checkbox"
                                     name="checkbox-entry-options" id="wd-media-recordings" value="option3" />
                                 <label className="form-check-label" htmlFor="wd-media-recordings"> Media Recordings </label> 
                             </div>
                             <div className="form-check my-2">
-                                <input className="form-check-input form-control" type="checkbox"
+                                <input className="form-check-input form-control me-2" type="checkbox"
                                     name="checkbox-entry-options" id="wd-student-annotation" value="option4" />
                                 <label className="form-check-label" htmlFor="wd-student-annotation"> Student Annotation </label> 
                             </div>
                             <div className="form-check my-2">
-                                <input className="form-check-input form-control" type="checkbox"
+                                <input className="form-check-input form-control me-2" type="checkbox"
                                     name="checkbox-entry-options" id="wd-file-upload" value="option5" />
                                 <label className="form-check-label" htmlFor="wd-file-upload"> File Uploads </label> 
                             </div>
