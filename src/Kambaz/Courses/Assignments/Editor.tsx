@@ -1,5 +1,5 @@
 import { FormGroup, FormLabel, FormControl, FormSelect, Row, Col } from "react-bootstrap";
-import { useParams } from "react-router";
+import { useParams, Link } from "react-router";
 import assignmentProps from "./AssignmentProps";
 import * as db from "../../Database";
 
@@ -12,7 +12,7 @@ export default function AssignmentEditor() {
                 <Editor assignmentTitle={a.title} 
                       assignmentAvailable={a.availableDate} 
                       assignmentDue={a.dueDate}
-                      assignmentURL=""
+                      assignmentURL={"/Kambaz/Courses/" + cid + "/Assignments/"}
                       assignmentDetails=""
                       assignmentPoints={100}/>
             );
@@ -22,12 +22,12 @@ export default function AssignmentEditor() {
     }
 
 const Editor = ({assignmentTitle, assignmentAvailable,
-    assignmentDue}: assignmentProps) => {
+    assignmentDue, assignmentURL}: assignmentProps) => {
     var textAreaText = "The assignment is available online.\nSubmit a link to the landing page of your Web application running on Netlify.";
     return (
       <div id="wd-assignments-editor" className="ms-5">
         <FormGroup>
-            <FormLabel>Assignment Title</FormLabel>
+            <FormLabel>Assignment Name</FormLabel>
             <FormControl className="w-75 form-control" id="wd-name" value={assignmentTitle}/>
             <FormControl className="my-3 w-75 form-control" as="textarea" id="wd-description" value={textAreaText} rows={5} />
         </FormGroup>
@@ -103,7 +103,7 @@ const Editor = ({assignmentTitle, assignmentAvailable,
                     <option selected value="Everyone">Everyone</option>
                 </FormSelect>
                 <label className="pt-4" htmlFor="wd-due-date">Due</label><br/>
-                <input type="date" className="w-100 rounded form-control" value="2024-05-13" id="wd-due-date"/><br/>
+                <input type="date" className="w-100 rounded form-control" value={assignmentDue} id="wd-due-date"/><br/>
                 <div className="my-3">
                     <Row>
                         <Col>
@@ -127,8 +127,8 @@ const Editor = ({assignmentTitle, assignmentAvailable,
         </Row>
         <hr/>
         <div className="mt-3 text-end" style={{width: "76%"}}>
-            <button className="btn btn-lg btn-secondary me-2">Cancel</button>
-            <button className="btn btn-lg btn-danger">Save</button>
+            <Link to={assignmentURL} className="btn btn-lg btn-secondary me-2">Cancel</Link>
+            <Link to={assignmentURL} className="btn btn-lg btn-danger">Save</Link>
         </div>
     </div>
 );

@@ -116,7 +116,8 @@ function GreenCheckmark() {
 );}
 
 function formatDate(date: string) {
-    const customDate = new Date(date); 
+    const dateTime = date + " 12:00:00";
+    const customDate = new Date(dateTime); 
     const options: Intl.DateTimeFormatOptions = {
         month: 'long',
         day: 'numeric'
