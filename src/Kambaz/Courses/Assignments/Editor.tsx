@@ -1,12 +1,34 @@
 import { FormGroup, FormLabel, FormControl, FormSelect, Row, Col } from "react-bootstrap";
+import { useParams, Link } from "react-router";
+import assignmentProps from "./AssignmentProps";
+import * as db from "../../Database";
 
 export default function AssignmentEditor() {
+    const { cid, aid } = useParams();
+    const assignments = db.assignments;
+    for (const a of assignments) {
+        if (a.course === cid && a._id === aid) {
+            return (
+                <Editor assignmentTitle={a.title} 
+                      assignmentAvailable={a.availableDate} 
+                      assignmentDue={a.dueDate}
+                      assignmentURL={"/Kambaz/Courses/" + cid + "/Assignments/"}
+                      assignmentDetails=""
+                      assignmentPoints={100}/>
+            );
+        }
+      }
+    
+    }
+
+const Editor = ({assignmentTitle, assignmentAvailable,
+    assignmentDue, assignmentURL}: assignmentProps) => {
     var textAreaText = "The assignment is available online.\nSubmit a link to the landing page of your Web application running on Netlify.";
     return (
       <div id="wd-assignments-editor" className="ms-5">
         <FormGroup>
             <FormLabel>Assignment Name</FormLabel>
-            <FormControl className="w-75 form-control" id="wd-name" value=" A1 - ENV + HTML"/>
+            <FormControl className="w-75 form-control" id="wd-name" value={assignmentTitle}/>
             <FormControl className="my-3 w-75 form-control" as="textarea" id="wd-description" value={textAreaText} rows={5} />
         </FormGroup>
         <Row>
@@ -81,38 +103,33 @@ export default function AssignmentEditor() {
                     <option selected value="Everyone">Everyone</option>
                 </FormSelect>
                 <label className="pt-4" htmlFor="wd-due-date">Due</label><br/>
-                <input type="date" className="w-100 rounded form-control" value="2024-05-13" id="wd-due-date"/><br/>
-                <AssignmentAvailability />
+                <input type="date" className="w-100 rounded form-control" value={assignmentDue} id="wd-due-date"/><br/>
+                <div className="my-3">
+                    <Row>
+                        <Col>
+                            <label htmlFor="wd-available-from">Available From</label>
+                        </Col>
+                        <Col>
+                            <label htmlFor="wd-available-until">Until</label>
+                        </Col>
+                        
+                    </Row>
+                    <Row>
+                        <Col>
+                            <input className="w-100 rounded form-control" type="date" value={assignmentAvailable} id="wd-available-from"/>
+                        </Col>
+                        <Col>
+                            <input className="w-100 rounded form-control" type="date" value={assignmentDue} id="wd-available-until"/>
+                        </Col>
+                    </Row>
+                </div>
             </Col>
         </Row>
         <hr/>
         <div className="mt-3 text-end" style={{width: "76%"}}>
-            <button className="btn btn-lg btn-secondary me-2">Cancel</button>
-            <button className="btn btn-lg btn-danger">Save</button>
+            <Link to={assignmentURL} className="btn btn-lg btn-secondary me-2">Cancel</Link>
+            <Link to={assignmentURL} className="btn btn-lg btn-danger">Save</Link>
         </div>
     </div>
-);}
-
-function AssignmentAvailability() {
-    return (
-        <div className="my-3">
-            <Row>
-                <Col>
-                    <label htmlFor="wd-available-from">Available From</label>
-                </Col>
-                <Col>
-                    <label htmlFor="wd-available-until">Until</label>
-                </Col>
-                
-            </Row>
-            <Row>
-                <Col>
-                    <input className="w-100 rounded form-control" type="date" value="2024-05-06" id="wd-available-from"/>
-                </Col>
-                <Col>
-                    <input className="w-100 rounded form-control" type="date" value="2024-05-20" id="wd-available-until"/>
-                </Col>
-            </Row>
-        </div>
-    );
+);
 }

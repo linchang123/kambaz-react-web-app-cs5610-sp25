@@ -1,8 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 export default function CourseNavigation() {
+  const { pathname } = useLocation();
+  const { cid } = useParams();
+  const links = ["Home", "Modules", "Piazza", "Zoom", "Assignments", 
+                 "Quizzes", "Grades", "People"];
   return (
-    <div id="wd-courses-navigation" className="wd list-group fs-5 rounded-0">
-      <Link to="/Kambaz/Courses/1234/Home" id="wd-course-home-link" className="list-group-item active border border-0">Home</Link>
+    <div id="wd-courses-navigation" className="wd list-group fs-5 rounded- me-4">
+      {/* <Link to="/Kambaz/Courses/1234/Home" id="wd-course-home-link" className="list-group-item active border border-0">Home</Link>
       <Link to="/Kambaz/Courses/1234/Modules" id="wd-course-modules-link" className="list-group-item text-danger border border-0">Modules
         </Link>
       <Link to="/Kambaz/Courses/1234/Piazza" id="wd-course-piazza-link" className="list-group-item text-danger border border-0">Piazza</Link>
@@ -12,7 +16,19 @@ export default function CourseNavigation() {
       <Link to="/Kambaz/Courses/1234/Quizzes" id="wd-course-assignments-link" className="list-group-item text-danger border border-0">Quizzes
         </Link>
       <Link to="/Kambaz/Courses/1234/Grades" id="wd-course-grades-link" className="list-group-item text-danger border border-0">Grades</Link>
-      <Link to="/Kambaz/Courses/1234/People" id="wd-course-people-link" className="list-group-item text-danger border border-0">People</Link>
+      <Link to="/Kambaz/Courses/1234/People" id="wd-course-people-link" className="list-group-item text-danger border border-0">People</Link> */}
+      {links.map((link) => (
+        <Link to={"/Kambaz/Courses/" + cid + "/" + link} 
+        id={"wd-course-" + link.toLowerCase() + "-link"} 
+        className={`list-group-item border border-0
+              ${pathname.includes(link) ? "active" : "text-danger"}`}> 
+              {link}
+        </Link>
+      ))
+      }
+
     </div>
   );
 }
+
+
