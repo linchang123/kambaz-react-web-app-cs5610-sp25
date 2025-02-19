@@ -8,14 +8,14 @@ export default function ArrayStateVariable() {
     setArray(array.filter((_, i) => i !== index));
   };
   return (
-    <div id="wd-array-state-variables">
+    <div id="wd-array-state-variables" className="ms-2">
       <h2>Array State Variable</h2>
-      <button onClick={addElement}>Add Element</button>
-      <ul>
+      <button className="btn btn-success" onClick={addElement}>Add Element</button>
+      <ul className="list-group mt-2">
         {array.map((item, index) => (
-          <li key={index}>
+          <li key={index} className="border list-unstyled w-25 rounded fs-3 pt-1 ps-3" style={{}}>
             {item}
-            <button onClick={() => deleteElement(index)}
+            <button className="btn btn-danger float-end m-2" onClick={() => deleteElement(index)}
                     id="wd-delete-element-click">
               Delete</button>
           </li>
