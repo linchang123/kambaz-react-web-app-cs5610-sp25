@@ -1,6 +1,6 @@
 import AssignmentsControlButtons from "./AssignmentsControlButtons";
 import AssignmentsControls from "./AssignmentsControls";
-import assignmentProps from "./AssignmentProps";
+// import assignmentProps from "./AssignmentProps";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { BsGripVertical } from "react-icons/bs";
 import { FaFilePen } from "react-icons/fa6";
@@ -45,15 +45,22 @@ export default function Assignments() {
             assignmentAvailable={formatDate(assignment.availableDate) + "at 12:00am"} 
             assignmentDue={formatDate(assignment.dueDate) + " at 11:59pm"}
             assignmentURL={"#/Kambaz/Courses/" + cid + "/Assignments/" + assignment._id}
-            assignmentDetails=""
-            assignmentPoints={100}/>
+            // assignmentDetails=""
+            // assignmentPoints={100}
+            />
           ))}
         </ul>
       </div>
   );}
   
-const Assignment = ({assignmentTitle, assignmentAvailable,
-    assignmentDue, assignmentURL}: assignmentProps) => {
+const Assignment = 
+// ({assignmentTitle, assignmentAvailable,assignmentDue, assignmentURL}: assignmentProps) 
+    ({assignmentTitle, assignmentAvailable,assignmentDue, assignmentURL}: {
+        assignmentTitle: string;
+        assignmentAvailable:string;
+        assignmentDue: string;
+        assignmentURL: string;
+    }) => {
     return (
         <li className="wd-assignment-list-item list-group-item p-3 ps-1 d-flex align-items-center">
         {/*<li className="wd-assignment-list-item list-group-item p-3 ps-1">

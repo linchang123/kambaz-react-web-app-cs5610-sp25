@@ -1,6 +1,6 @@
 import { FormGroup, FormLabel, FormControl, FormSelect, Row, Col } from "react-bootstrap";
 import { useParams, Link } from "react-router";
-import assignmentProps from "./AssignmentProps";
+// import assignmentProps from "./AssignmentProps";
 import * as db from "../../Database";
 
 export default function AssignmentEditor() {
@@ -13,16 +13,21 @@ export default function AssignmentEditor() {
                       assignmentAvailable={a.availableDate} 
                       assignmentDue={a.dueDate}
                       assignmentURL={"/Kambaz/Courses/" + cid + "/Assignments/"}
-                      assignmentDetails=""
-                      assignmentPoints={100}/>
+                    //   assignmentDetails=""
+                    //   assignmentPoints={100}
+                      />
             );
         }
       }
     
     }
 
-const Editor = ({assignmentTitle, assignmentAvailable,
-    assignmentDue, assignmentURL}: assignmentProps) => {
+const Editor = ( {assignmentTitle, assignmentAvailable,assignmentDue, assignmentURL}: {
+    assignmentTitle: string;
+    assignmentAvailable:string;
+    assignmentDue: string;
+    assignmentURL: string;
+}) => {
     var textAreaText = "The assignment is available online.\nSubmit a link to the landing page of your Web application running on Netlify.";
     return (
       <div id="wd-assignments-editor" className="ms-5">
