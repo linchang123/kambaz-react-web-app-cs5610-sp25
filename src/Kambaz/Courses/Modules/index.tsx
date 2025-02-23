@@ -9,12 +9,13 @@ import { useState } from "react";
 import { addModule, editModule, updateModule, deleteModule }
   from "./reducer";
 import { useSelector, useDispatch } from "react-redux";
+import { IoMdArrowDropdown } from "react-icons/io";
 
 export default function Modules() {
     const { cid } = useParams();
     const { modules } = useSelector((state: any) => state.modulesReducer);
     const dispatch = useDispatch();
-
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
     // const [modules, setModules] = useState<any[]>(db.modules);
     const [moduleName, setModuleName] = useState("");
     // const addModule = () => {
@@ -35,14 +36,16 @@ export default function Modules() {
       <div>
         <ModulesControls setModuleName={setModuleName} moduleName={moduleName} addModule={() => {
           dispatch(addModule({ name: moduleName, course: cid }));
-          setModuleName("");}} /><br /><br /><br /><br />
+          setModuleName("");}} />
+          <br /><br /><br /><br />
         <ul id="wd-modules" className="list-group rounded-0">
         {modules
           .filter((module: any) => module.course === cid)
           .map((module: any) => (
           <li className="wd-module list-group-item p-0 mb-5 fs-5 border-gray">
             <div className="wd-title p-3 ps-2 bg-secondary">
-              <BsGripVertical className="me-2 fs-3" />
+              {currentUser.role === "FACULTY" && (<BsGripVertical className="me-2 fs-3" />)}
+              {currentUser.role === "STUDENT" && (<IoMdArrowDropdown className="me-2 fs-3"/>)}
               { // if the module's editing field is False, the module's name will be displayed
               !module.editing && module.name
               }
@@ -61,14 +64,14 @@ export default function Modules() {
                       }}
                       defaultValue={module.name}/>
               )}
-              <ModuleControlButtons moduleId={module._id} deleteModule={(moduleId) => {
-                    dispatch(deleteModule(moduleId));}} editModule={(moduleId) => dispatch(editModule(moduleId))}/>
+              {currentUser.role == "FACULTY" && (<ModuleControlButtons moduleId={module._id} deleteModule={(moduleId) => {
+                    dispatch(deleteModule(moduleId));}} editModule={(moduleId) => dispatch(editModule(moduleId))}/>)}
             </div>
             {module.lessons && (
               <ul className="wd-lessons list-group rounded-0">
                 {module.lessons.map((lesson: any) => (
                   <li className="wd-lesson list-group-item p-3 ps-1">
-                    <BsGripVertical className="me-2 fs-3" /> {lesson.name} <LessonControlButtons />
+                    <LessonControl lessonName={lesson.name}/>
                   </li>
                 ))}
               </ul>)}
@@ -131,4 +134,20 @@ export default function Modules() {
       </div>
 
   );}
-  
+
+const LessonControl = ({ lessonName }: { lessonName: string }) => {
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  if (currentUser.role === "FACULTY"){
+    return (
+      <div className="wd-modules-lesson-control-buttons">
+          <BsGripVertical className="me-2 fs-3" /> 
+          {lessonName} 
+          <LessonControlButtons />
+      </div>
+    );
+  } else {
+    return (
+      <div className="wd-modules-lesson-title ps-3">{lessonName}</div>
+    );
+  }
+}

@@ -1,11 +1,14 @@
 import { FaPlus } from "react-icons/fa6";
 import GreenCheckmark from "./GreenCheckmark";
 import ModuleEditor from "./ModuleEditor";
+import { useSelector } from "react-redux";
 
 export default function ModulesControls(
   { moduleName, setModuleName, addModule }:
   { moduleName: string; setModuleName: (title: string) => void; addModule: () => void; }
 ) {
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  if (currentUser.role === "FACULTY") {
   return (
     <div id="wd-modules-controls" className="text-nowrap">
       <button id="wd-add-module-btn" className="btn btn-lg btn-danger me-1 float-end"
@@ -47,3 +50,5 @@ export default function ModulesControls(
 
     </div>
 );}
+return(<button id="wd-collapse-all" className="btn btn-lg btn-secondary me-1 float-end">Collapse All</button>);
+}

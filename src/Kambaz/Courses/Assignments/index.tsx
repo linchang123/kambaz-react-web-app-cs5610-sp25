@@ -9,21 +9,22 @@ import { IoEllipsisVertical } from "react-icons/io5";
 import { FaCheckCircle, FaCircle } from "react-icons/fa";
 import { useParams } from "react-router";
 import * as db from "../../Database";
+import { useSelector } from "react-redux";
 
 export default function Assignments() {
     const { cid } = useParams();
     const assignments = db.assignments;
-
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
     return (
       <div id="wd-assignments">
         <div className="text-nowrap">
-            <AssignmentsControls/>
+        {currentUser.role === "FACULTY" && (<AssignmentsControls/>)}
         </div>
         <div id="wd-assignments-title" className="wd-title p-3 ps-2 bg-secondary fs-5 fw-bolder mt-5">
-            <BsGripVertical className="me-2 fs-3" />
+            {currentUser.role === "FACULTY" && (<BsGripVertical className="me-2 fs-3" />)}
             <IoMdArrowDropdown className="me-2 fs-3"/>
             ASSIGNMENTS
-            <AssignmentsControlButtons/>
+            {currentUser.role === "FACULTY" && (<AssignmentsControlButtons/>)}
         </div>
         <ul id="wd-assignment-list" className="list-group rounded-0">
 
@@ -61,6 +62,7 @@ const Assignment =
         assignmentDue: string;
         assignmentURL: string;
     }) => {
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
     return (
         <li className="wd-assignment-list-item list-group-item p-3 ps-1 d-flex align-items-center">
         {/*<li className="wd-assignment-list-item list-group-item p-3 ps-1">
@@ -90,25 +92,26 @@ const Assignment =
                 </Col>
             </Row>
         */}
-             <BsGripVertical className="my-3 me-2 fs-3" style={{minWidth: "30px"}}/>
-             <FaFilePen className="my-3 fs-3 "style={{minWidth: "30px"}}/>
+             {currentUser.role === "FACULTY" && (<BsGripVertical className="my-3 me-2 fs-3" style={{minWidth: "30px"}}/>)}
+             <FaFilePen className="m-3 fs-3 "style={{minWidth: "30px"}}/>
              <div className="ms-3" style={{width: "90%"}}>
                  <a href={assignmentURL}
                   className="wd-assignment-link fw-bold text-black text-decoration-none fs-5" >
                   {assignmentTitle}
                  </a> 
                  <p className="m-0">
-                     <span className="text-danger">Multiple Modules</span> | <span className="fw-bold">Not Available until </span>{assignmentAvailable} | <br/>
-                     <span className="fw-bold">Due</span> {assignmentDue} | 100pts
+                     <span className="text-danger">Multiple Modules</span> | <span className="fw-bold">Not Available until </span>{assignmentAvailable} | 
+                     {currentUser.role === "FACULTY" && (<br/>)}
+                     <span className="fw-bold"> Due</span> {assignmentDue} | 100pts
                  </p>
 
              </div>
-             <div className="d-flex align-items-center ms-3" style={{minWidth: "68px"}}>
+             {currentUser.role === "FACULTY" && (<div className="d-flex align-items-center ms-3" style={{minWidth: "68px"}}>
                  <Row>
                      <Col><GreenCheckmark/></Col>
                      <Col><IoEllipsisVertical className="fs-4" /></Col>
                  </Row>
-             </div>
+             </div>)}
         </li>
     );
 };

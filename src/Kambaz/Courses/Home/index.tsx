@@ -7,7 +7,7 @@ export default function Home() {
         <Modules />
       </div>
       <div className="d-none d-lg-block ms-5">
-        <CourseStatus />
+      <CourseStatus />
       </div>
     </div>
 
