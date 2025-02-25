@@ -1,5 +1,5 @@
 import { FormGroup, FormLabel, FormControl, FormSelect, Row, Col } from "react-bootstrap";
-import { useParams, Link } from "react-router";
+import { useParams } from "react-router";
 // import assignmentProps from "./AssignmentProps";
 // import * as db from "../../Database";
 import { addAssignment, updateAssignment } from "./reducer";
