@@ -8,17 +8,21 @@ import { Row, Col } from "react-bootstrap";
 import { IoEllipsisVertical } from "react-icons/io5";
 import { FaCheckCircle, FaCircle } from "react-icons/fa";
 import { useParams } from "react-router";
-import * as db from "../../Database";
+// import * as db from "../../Database";
+import { v4 as uuidv4 } from "uuid";
 import { useSelector } from "react-redux";
+import { useState } from "react";
 
 export default function Assignments() {
     const { cid } = useParams();
-    const assignments = db.assignments;
+    // const assignments = db.assignments;
     const { currentUser } = useSelector((state: any) => state.accountReducer);
+    const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+    const [assignmentId, setAssignmentId] = useState(uuidv4());
     return (
       <div id="wd-assignments">
         <div className="text-nowrap">
-        {currentUser.role === "FACULTY" && (<AssignmentsControls/>)}
+        {currentUser.role === "FACULTY" && (<AssignmentsControls assignmentId={assignmentId} setAssignmentId={setAssignmentId}/>)}
         </div>
         <div id="wd-assignments-title" className="wd-title p-3 ps-2 bg-secondary fs-5 fw-bolder mt-5">
             {currentUser.role === "FACULTY" && (<BsGripVertical className="me-2 fs-3" />)}
@@ -43,24 +47,29 @@ export default function Assignments() {
           .filter((assignment: any) => assignment.course === cid)
           .map((assignment: any) => (
             <Assignment assignmentTitle={assignment.title} 
-            assignmentAvailable={formatDate(assignment.availableDate) + "at 12:00am"} 
+            assignmentAvailable={formatDate(assignment.availableFromDate) + "at 12:00am"} 
             assignmentDue={formatDate(assignment.dueDate) + " at 11:59pm"}
             assignmentURL={"#/Kambaz/Courses/" + cid + "/Assignments/" + assignment._id}
+            assignmentPoints={assignment.points}
             // assignmentDetails=""
             // assignmentPoints={100}
             />
           ))}
         </ul>
+        {assignments.filter((assignment: any) => assignment.course === cid).map((assignment: any) => (
+            <div>{assignment.title}</div>
+        ))}
       </div>
   );}
   
 const Assignment = 
 // ({assignmentTitle, assignmentAvailable,assignmentDue, assignmentURL}: assignmentProps) 
-    ({assignmentTitle, assignmentAvailable,assignmentDue, assignmentURL}: {
+    ({assignmentTitle, assignmentAvailable,assignmentDue, assignmentURL, assignmentPoints}: {
         assignmentTitle: string;
         assignmentAvailable:string;
         assignmentDue: string;
         assignmentURL: string;
+        assignmentPoints: number;
     }) => {
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     return (
@@ -102,7 +111,7 @@ const Assignment =
                  <p className="m-0">
                      <span className="text-danger">Multiple Modules</span> | <span className="fw-bold">Not Available until </span>{assignmentAvailable} | 
                      {currentUser.role === "FACULTY" && (<br/>)}
-                     <span className="fw-bold"> Due</span> {assignmentDue} | 100pts
+                     <span className="fw-bold"> Due</span> {assignmentDue} | {assignmentPoints} pts
                  </p>
 
              </div>

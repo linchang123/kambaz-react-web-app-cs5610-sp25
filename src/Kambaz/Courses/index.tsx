@@ -16,6 +16,7 @@ export default function Courses(
     const {pathname} = useLocation();
     const { courses } = useSelector((state: any) => state.coursesReducer);
     const course = courses.find((course: { _id: string | undefined; }) => course._id === cid);
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
     return (
       <div id="wd-courses">
         <h2 className="text-danger">
@@ -33,7 +34,8 @@ export default function Courses(
                 <Route path="Home" element={<Home/>} />
                 <Route path="Modules" element={<Modules/>} />
                 <Route path="Assignments" element={<Assignments />} />
-                <Route path="Assignments/:aid" element={<AssignmentEditor/>} />
+                {currentUser.role === "FACULTY" && (<Route path="Assignments/:aid" element={<AssignmentEditor/>} />)}
+                {/* {currentUser.role === "STUDENT" && (<Route path="Assignments/*" element={<Assignments />} />)} */}
                 <Route path="People" element={<PeopleTable />} />
                 </Routes>
             </div>
