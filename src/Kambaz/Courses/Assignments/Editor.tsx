@@ -73,10 +73,8 @@ const Editor = ( {
         availableTilDate: assignmentTilDate, description: assignmentDetails, points: assignmentPoints}));
     const handleSave = () => {
         if (newAssignment) {
-            console.log(`dispatching new assignment ${assignmentData}`)
             dispatch(addAssignment(assignmentData));
         } else {
-            console.log(`dispatching updated assignment ${assignmentData}`)
             dispatch(updateAssignment(assignmentData));
         }
         navigate(assignmentURL);

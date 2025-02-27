@@ -1,10 +1,11 @@
 import {useState} from "react";
-// import { v4 as uuidv4 } from "uuid";
 import { Link } from "react-router-dom";
 import {Row, Col, Card} from "react-bootstrap";
-import * as db from "../Database";
+// import * as db from "../Database";
 import { useSelector, useDispatch } from "react-redux";
 import { addCourse, updateCourse, deleteCourse } from "./courseReducer";
+import { addEnrollment, deleteEnrollment } from "./enrollmentReducer";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Dashboard(
   // { courses, course, setCourse, addNewCourse,
@@ -14,7 +15,8 @@ export default function Dashboard(
   // updateCourse: () => void; }
 ) {
     const { currentUser } = useSelector((state: any) => state.accountReducer);
-    const { enrollments } = db;
+    // const { enrollments } = db;
+    const {enrollments} = useSelector((state: any) => state.enrollmentsReducer);
     const { courses } = useSelector((state: any) => state.coursesReducer);
     const dispatch = useDispatch();
     const defaultCourseInfo = {
@@ -23,6 +25,7 @@ export default function Dashboard(
       image: "/images/reactjs.jpg", description: "New Description"
     }
     const [course, setCourse] = useState(defaultCourseInfo);
+    const [courseView, setCourseView] = useState(false);
     
     const addNewCourse = () => {
       dispatch(addCourse(course));
@@ -54,10 +57,27 @@ export default function Dashboard(
           <textarea value={course.description} className="form-control" onChange={(e) => setCourse({ ...course, description: e.target.value }) } />
           <hr />
           </div>)}
-          <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2> <hr />
+          <DashboardTitle currentUser={currentUser}  courses={courses} enrollments={enrollments} courseView={courseView} setCourseView={setCourseView}/>
+           <hr />
           <div id="wd-dashboard-courses">
             <Row xs={1} md={5} className="g-4">
-              {courses.filter((c: any) => enrollments.some((enrollment) => enrollment.user === currentUser._id && enrollment.course === c._id)).map((c: any) => (
+            {courseView && courses.map((course: any) => (
+            <Col className="wd-dashboard-course" style={{ width: "300px" }}>
+              <Card>
+                <Card.Img src="/images/reactJS.png" variant="top" width="100%" height={160} />
+                <Card.Body className="card-body">
+                  <Card.Title className="wd-dashboard-course-title text-nowrap overflow-hidden">
+                    {course.name} </Card.Title>
+                  <Card.Text className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>
+                    {course.description} </Card.Text>
+                  {/* <Button variant="primary"> Go </Button> */}
+                  <CourseEnrollmentButton courses={courses} course={course} enrollments={enrollments} currentUser={currentUser}/>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
+
+              {courses.filter((c: any) => enrollments.some((enrollment: { user: any; course: any; }) => enrollment.user === currentUser._id && enrollment.course === c._id && !courseView)).map((c: any) => (
                 <Col className="wd-dashboard-course" style={{ width: "300px" }}>
                   <Card>
                     <Link to={`/Kambaz/Courses/${c._id}/Home`}
@@ -97,6 +117,32 @@ export default function Dashboard(
       </div>);
 }
 
+
+function DashboardTitle({currentUser, courses, enrollments, courseView, setCourseView}:{currentUser: any, courses: any, enrollments: any, courseView: boolean, setCourseView: (view: boolean) => void;}) {
+  if (currentUser.role == "STUDENT") {
+    const enrolledCourses = courses.filter((c: any) => enrollments.some((enrollment: { user: any; course: any; }) => enrollment.user === currentUser._id && enrollment.course === c._id))
+    const handleClick = () => {setCourseView(!courseView)};
+    return(<div className="d-flex justify-content-between">
+            {courseView ? (<h2 id="wd-dashboard-enrolled">All Courses ({courses.length})</h2>) : (<h2 id="wd-dashboard-enrolled">Enrolled Courses ({enrolledCourses.length})</h2>)}
+            <button id="wd-dashboard-enrollments-button" onClick={handleClick} className="btn btn-primary">Enrollments</button>
+            
+    </div>);
+  } else {
+    <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2>
+  }
+}
+
+function CourseEnrollmentButton({currentUser, enrollments, courses, course}: {currentUser: any, enrollments: any, courses: any, course: any}) {
+  const enrolledCourses = courses.filter((c: any) => enrollments.some((enrollment: { user: any; course: any; }) => enrollment.user === currentUser._id && enrollment.course === c._id));
+  const dispatch = useDispatch();
+  if (enrolledCourses.find((c: any) => c._id === course._id)) {
+    const enrollment = {user: currentUser._id, course: course._id};
+    return(<button className="btn btn-danger" onClick={() => {dispatch(deleteEnrollment(enrollment))}}>Unenroll</button>);
+  } else {
+    const enrollment = {_id: uuidv4(), user: currentUser._id, course: course._id}
+    return (<button className="btn btn-success" onClick={() => {dispatch(addEnrollment(enrollment))}}>Enroll</button>)
+  }
+}
 
 // export default function Dashboard() {
 //     var courses = [

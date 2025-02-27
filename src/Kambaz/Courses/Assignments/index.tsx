@@ -10,8 +10,10 @@ import { FaCheckCircle, FaCircle } from "react-icons/fa";
 import { useParams } from "react-router";
 // import * as db from "../../Database";
 import { v4 as uuidv4 } from "uuid";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
+import { FaTrash } from "react-icons/fa";
+import { deleteAssignment } from "./reducer";
 
 export default function Assignments() {
     const { cid } = useParams();
@@ -19,6 +21,8 @@ export default function Assignments() {
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const { assignments } = useSelector((state: any) => state.assignmentsReducer);
     const [assignmentId, setAssignmentId] = useState(uuidv4());
+    // selectedAssignment is shared across all individual Assignment components (select 1 assignment from all the assignments)
+    const [selectedAssignment, setSelectedAssignment] = useState({_id: "", title: ""})
     return (
       <div id="wd-assignments">
         <div className="text-nowrap">
@@ -30,7 +34,7 @@ export default function Assignments() {
             ASSIGNMENTS
             {currentUser.role === "FACULTY" && (<AssignmentsControlButtons/>)}
         </div>
-        <ul id="wd-assignment-list" className="list-group rounded-0">
+        <ul id="wd-assignment-list" className="list-group rounded-0" style={{minWidth: 0}}>
 
           {/* {
             assignments.map((assignment) => (
@@ -46,30 +50,36 @@ export default function Assignments() {
           {assignments
           .filter((assignment: any) => assignment.course === cid)
           .map((assignment: any) => (
-            <Assignment assignmentTitle={assignment.title} 
+            <Assignment assignmentTitle={assignment.title} assignmentId={assignment._id}
             assignmentAvailable={formatDate(assignment.availableFromDate) + "at 12:00am"} 
             assignmentDue={formatDate(assignment.dueDate) + " at 11:59pm"}
             assignmentURL={"#/Kambaz/Courses/" + cid + "/Assignments/" + assignment._id}
             assignmentPoints={assignment.points}
-            // assignmentDetails=""
+            assignmentTilDate={assignment.availableTilDate}
+            courseId={assignment.courseId}
+            assignmentDetails={assignment.description}
+            setSelectedAssignment={setSelectedAssignment}
             // assignmentPoints={100}
             />
           ))}
         </ul>
-        {assignments.filter((assignment: any) => assignment.course === cid).map((assignment: any) => (
-            <div>{assignment.title}</div>
-        ))}
+        <DeleteAssignment dialogTitle="Delete Assignment" selectedAssignment={selectedAssignment}/>
       </div>
   );}
   
 const Assignment = 
 // ({assignmentTitle, assignmentAvailable,assignmentDue, assignmentURL}: assignmentProps) 
-    ({assignmentTitle, assignmentAvailable,assignmentDue, assignmentURL, assignmentPoints}: {
+    ({assignmentTitle, assignmentAvailable,assignmentDue, assignmentURL, assignmentPoints, setSelectedAssignment, assignmentId}: {
         assignmentTitle: string;
         assignmentAvailable:string;
         assignmentDue: string;
         assignmentURL: string;
         assignmentPoints: number;
+        assignmentTilDate: string;
+        courseId: string;
+        assignmentDetails: string
+        setSelectedAssignment: (assignment: { _id: string, title: string }) => void;
+        assignmentId: string;
     }) => {
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     return (
@@ -101,9 +111,9 @@ const Assignment =
                 </Col>
             </Row>
         */}
-             {currentUser.role === "FACULTY" && (<BsGripVertical className="my-3 me-2 fs-3" style={{minWidth: "30px"}}/>)}
+             {currentUser.role === "FACULTY" && (<BsGripVertical className="my-3 me-2 fs-3" style={{minWidth: "20px"}}/>)}
              <FaFilePen className="m-3 fs-3 "style={{minWidth: "30px"}}/>
-             <div className="ms-3" style={{width: "90%"}}>
+             <div className="ms-3" style={{width: "80%"}}>
                  <a href={assignmentURL}
                   className="wd-assignment-link fw-bold text-black text-decoration-none fs-5" >
                   {assignmentTitle}
@@ -115,15 +125,50 @@ const Assignment =
                  </p>
 
              </div>
-             {currentUser.role === "FACULTY" && (<div className="d-flex align-items-center ms-3" style={{minWidth: "68px"}}>
+             {currentUser.role === "FACULTY" && (<div className="d-flex align-items-center ms-3" style={{minWidth: "120px"}}>
                  <Row>
                      <Col><GreenCheckmark/></Col>
                      <Col><IoEllipsisVertical className="fs-4" /></Col>
+                     <Col><FaTrash data-bs-toggle="modal" data-bs-target="#wd-delete-assignment-dialog" className="text-danger fs-4" 
+                     onClick={() => setSelectedAssignment({ _id: assignmentId, title: assignmentTitle })}/>
+                     {/**
+                      * 1. When clicking on the trash icon, "setSelectedAssignment" updates the selected assignment
+                      * 2. The modal opens, triggered by "data-bs-target"
+                      */}
+                     </Col>
+                    
                  </Row>
              </div>)}
         </li>
     );
 };
+
+function DeleteAssignment({ dialogTitle, selectedAssignment }:
+    { dialogTitle: string; selectedAssignment: any; }) {
+        const dispatch = useDispatch();
+      return (
+        <div id="wd-delete-assignment-dialog" className="modal fade" data-bs-backdrop="static" data-bs-keyboard="false">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h1 className="modal-title fs-5" id="staticBackdropLabel">
+                  {dialogTitle} </h1>
+              </div>
+              <div className="modal-body">
+                <p>Are you sure to remove {selectedAssignment.title} ?</p>
+              </div>
+              <div className="modal-footer">
+              <button onClick={() => {dispatch(deleteAssignment(selectedAssignment._id));}} type="button" data-bs-dismiss="modal" className="btn btn-danger">
+              Yes </button>
+                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                  No </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+
+}
 
 function GreenCheckmark() {
   return (
