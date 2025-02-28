@@ -11,12 +11,12 @@ name: "courses",
 initialState,
 reducers: {
     addCourse: (state, {payload: course}) => {
-        const newCourse: any = {...course,
-            _id: uuidv4(),
-            name: course.name,
-            description: course.description
-        }
-        state.courses = [...state.courses, newCourse] as any;
+        // const newCourse: any = {...course,
+        //     _id: uuidv4(),
+        //     name: course.name,
+        //     description: course.description
+        // }
+        state.courses = [...state.courses, course] as any;
     },
     deleteCourse: (state, { payload: courseId }) => {
     state.courses = state.courses.filter(

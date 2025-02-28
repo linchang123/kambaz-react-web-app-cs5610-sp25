@@ -27,9 +27,9 @@ export default function TodoList() {
     
   const { todos } = useSelector((state: any) => state.todosReducer);
   return (
-    <div className="ms-2">
+    <div className="ms-2" style={{width: "800px"}}>
       <h2>Todo List</h2>
-      <ul className="list-group w-25">
+      <ul className="list-group w-50">
         <TodoForm />
         {todos.map((todo: any) => (
           <TodoItem todo={todo} />

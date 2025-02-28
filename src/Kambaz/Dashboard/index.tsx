@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import { Link } from "react-router-dom";
 import {Row, Col, Card} from "react-bootstrap";
 // import * as db from "../Database";
@@ -24,11 +24,18 @@ export default function Dashboard(
       startDate: "2023-09-10", endDate: "2023-12-15",
       image: "/images/reactjs.jpg", description: "New Description"
     }
-    const [course, setCourse] = useState(defaultCourseInfo);
+    const [course, setCourse] = useState({
+      _id: "0", name: "New Course", number: "New Number",
+      startDate: "2023-09-10", endDate: "2023-12-15",
+      image: "/images/reactjs.jpg", description: "New Description"
+    });
     const [courseView, setCourseView] = useState(false);
-    
+
     const addNewCourse = () => {
-      dispatch(addCourse(course));
+      const newCourseId = uuidv4();
+      const enrollment = {_id: uuidv4(), user: currentUser._id, course: newCourseId};
+      dispatch(addCourse({...course, _id: newCourseId}));
+      dispatch(addEnrollment(enrollment));
       setCourse(defaultCourseInfo);
     }
     const updateExistingCourse = () => {
@@ -37,10 +44,13 @@ export default function Dashboard(
     }
     const deleteExistingCourse = (cid: any) => {
       dispatch(deleteCourse(cid));
+      setCourse(defaultCourseInfo);
     }
     return (
         <div id="wd-dashboard">
           <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
+          <ul>
+          </ul>
           {currentUser.role === "FACULTY" && (
             <div id="wd-dashboard-new-course-section">
               <h5>New Course
@@ -57,10 +67,9 @@ export default function Dashboard(
           <textarea value={course.description} className="form-control" onChange={(e) => setCourse({ ...course, description: e.target.value }) } />
           <hr />
           </div>)}
-          <DashboardTitle currentUser={currentUser}  courses={courses} enrollments={enrollments} courseView={courseView} setCourseView={setCourseView}/>
-           <hr />
+          <DashboardTitle currentUser={currentUser}  courses={courses} enrollments={enrollments} courseView={courseView} setCourseView={setCourseView}/><hr/>
           <div id="wd-dashboard-courses">
-            <Row xs={1} md={5} className="g-4">
+            <Row xs={1} md={5} className="g-4 my-3">
             {courseView && courses.map((course: any) => (
             <Col className="wd-dashboard-course" style={{ width: "300px" }}>
               <Card>
