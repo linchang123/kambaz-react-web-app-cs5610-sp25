@@ -128,8 +128,8 @@ export default function Dashboard(
 
 
 function DashboardTitle({currentUser, courses, enrollments, courseView, setCourseView}:{currentUser: any, courses: any, enrollments: any, courseView: boolean, setCourseView: (view: boolean) => void;}) {
+  const enrolledCourses = courses.filter((c: any) => enrollments.some((enrollment: { user: any; course: any; }) => enrollment.user === currentUser._id && enrollment.course === c._id))
   if (currentUser.role == "STUDENT") {
-    const enrolledCourses = courses.filter((c: any) => enrollments.some((enrollment: { user: any; course: any; }) => enrollment.user === currentUser._id && enrollment.course === c._id))
     const handleClick = () => {setCourseView(!courseView)};
     return(<div className="d-flex justify-content-between">
             {courseView ? (<h2 id="wd-dashboard-enrolled">All Courses ({courses.length})</h2>) : (<h2 id="wd-dashboard-enrolled">Enrolled Courses ({enrolledCourses.length})</h2>)}
@@ -137,7 +137,7 @@ function DashboardTitle({currentUser, courses, enrollments, courseView, setCours
             
     </div>);
   } else {
-    <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2>
+    return (<h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2>);
   }
 }
 
