@@ -32,12 +32,12 @@ export default function AssignmentEditor() {
     return (<Editor 
         courseId={cid}
         assignmentId={aid}
-        assignmentTitle={""} 
+        assignmentTitle={"New Assignment"} 
         assignmentAvailable={""} 
         assignmentDue={""}
         assignmentTilDate={""}
         assignmentURL={"/Kambaz/Courses/" + cid + "/Assignments/"}
-        assignmentDetails={""}
+        assignmentDetails={"New Assignment Description"}
         assignmentPoints={100}
         newAssignment={true} />);
     
