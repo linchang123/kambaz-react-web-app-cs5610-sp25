@@ -10,6 +10,7 @@ import { addModule, editModule, updateModule, deleteModule }
   from "./reducer";
 import { useSelector, useDispatch } from "react-redux";
 import { IoMdArrowDropdown } from "react-icons/io";
+import FacultyFeatures from "../../Account/FacultyFeatures";
 
 export default function Modules() {
     const { cid } = useParams();
@@ -44,7 +45,7 @@ export default function Modules() {
           .map((module: any) => (
           <li className="wd-module list-group-item p-0 mb-5 fs-5 border-gray">
             <div className="wd-title p-3 ps-2 bg-secondary">
-              {currentUser.role === "FACULTY" && (<BsGripVertical className="me-2 fs-3" />)}
+            <FacultyFeatures><BsGripVertical className="me-2 fs-3" /></FacultyFeatures>
               {currentUser.role === "STUDENT" && (<IoMdArrowDropdown className="me-2 fs-3"/>)}
               { // if the module's editing field is False, the module's name will be displayed
               !module.editing && module.name
@@ -64,8 +65,8 @@ export default function Modules() {
                       }}
                       defaultValue={module.name}/>
               )}
-              {currentUser.role == "FACULTY" && (<ModuleControlButtons moduleId={module._id} deleteModule={(moduleId) => {
-                    dispatch(deleteModule(moduleId));}} editModule={(moduleId) => dispatch(editModule(moduleId))}/>)}
+              <FacultyFeatures><ModuleControlButtons moduleId={module._id} deleteModule={(moduleId) => {
+                    dispatch(deleteModule(moduleId));}} editModule={(moduleId) => dispatch(editModule(moduleId))}/></FacultyFeatures>
             </div>
             {module.lessons && (
               <ul className="wd-lessons list-group rounded-0">

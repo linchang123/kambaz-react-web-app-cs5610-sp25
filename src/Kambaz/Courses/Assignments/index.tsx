@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import { deleteAssignment } from "./reducer";
+import FacultyFeatures from "../../Account/FacultyFeatures";
 
 export default function Assignments() {
     const { cid } = useParams();
@@ -29,10 +30,10 @@ export default function Assignments() {
         {currentUser.role === "FACULTY" && (<AssignmentsControls assignmentId={assignmentId} setAssignmentId={setAssignmentId}/>)}
         </div>
         <div id="wd-assignments-title" className="wd-title p-3 ps-2 bg-secondary fs-5 fw-bolder mt-5">
-            {currentUser.role === "FACULTY" && (<BsGripVertical className="me-2 fs-3" />)}
+          <FacultyFeatures><BsGripVertical className="me-2 fs-3" /></FacultyFeatures>
             <IoMdArrowDropdown className="me-2 fs-3"/>
             ASSIGNMENTS
-            {currentUser.role === "FACULTY" && (<AssignmentsControlButtons/>)}
+            <FacultyFeatures><AssignmentsControlButtons/></FacultyFeatures>
         </div>
         <ul id="wd-assignment-list" className="list-group rounded-0" style={{minWidth: 0}}>
 
@@ -81,7 +82,6 @@ const Assignment =
         setSelectedAssignment: (assignment: { _id: string, title: string }) => void;
         assignmentId: string;
     }) => {
-    const { currentUser } = useSelector((state: any) => state.accountReducer);
     return (
         <li className="wd-assignment-list-item list-group-item p-3 ps-1 d-flex align-items-center">
         {/*<li className="wd-assignment-list-item list-group-item p-3 ps-1">
@@ -111,7 +111,7 @@ const Assignment =
                 </Col>
             </Row>
         */}
-             {currentUser.role === "FACULTY" && (<BsGripVertical className="my-3 me-2 fs-3" style={{minWidth: "20px"}}/>)}
+             <FacultyFeatures><BsGripVertical className="my-3 me-2 fs-3" style={{minWidth: "20px"}}/></FacultyFeatures>
              <FaFilePen className="m-3 fs-3 "style={{minWidth: "30px"}}/>
              <div className="ms-3" style={{width: "80%"}}>
                  <a href={assignmentURL}
@@ -120,25 +120,27 @@ const Assignment =
                  </a> 
                  <p className="m-0">
                      <span className="text-danger">Multiple Modules</span> | <span className="fw-bold">Not Available until </span>{assignmentAvailable} | 
-                     {currentUser.role === "FACULTY" && (<br/>)}
+                     <FacultyFeatures><br/></FacultyFeatures>
                      <span className="fw-bold"> Due</span> {assignmentDue} | {assignmentPoints} pts
                  </p>
 
              </div>
-             {currentUser.role === "FACULTY" && (<div className="d-flex align-items-center ms-3" style={{minWidth: "120px"}}>
-                 <Row>
-                     <Col><GreenCheckmark/></Col>
-                     <Col><IoEllipsisVertical className="fs-4" /></Col>
-                     <Col><FaTrash data-bs-toggle="modal" data-bs-target="#wd-delete-assignment-dialog" className="text-danger fs-4" 
-                     onClick={() => setSelectedAssignment({ _id: assignmentId, title: assignmentTitle })}/>
-                     {/**
-                      * 1. When clicking on the trash icon, "setSelectedAssignment" updates the selected assignment
-                      * 2. The modal opens, triggered by "data-bs-target"
-                      */}
-                     </Col>
-                    
-                 </Row>
-             </div>)}
+             <FacultyFeatures>
+              <div className="d-flex align-items-center ms-3" style={{minWidth: "120px"}}>
+                  <Row>
+                      <Col><GreenCheckmark/></Col>
+                      <Col><IoEllipsisVertical className="fs-4" /></Col>
+                      <Col><FaTrash data-bs-toggle="modal" data-bs-target="#wd-delete-assignment-dialog" className="text-danger fs-4" 
+                      onClick={() => setSelectedAssignment({ _id: assignmentId, title: assignmentTitle })}/>
+                      {/**
+                        * 1. When clicking on the trash icon, "setSelectedAssignment" updates the selected assignment
+                        * 2. The modal opens, triggered by "data-bs-target"
+                        */}
+                      </Col>
+                      
+                  </Row>
+              </div>
+             </FacultyFeatures>
         </li>
     );
 };
