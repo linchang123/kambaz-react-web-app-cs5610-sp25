@@ -27,7 +27,7 @@ export default function Assignments() {
     return (
       <div id="wd-assignments">
         <div className="text-nowrap">
-        {currentUser.role === "FACULTY" && (<AssignmentsControls assignmentId={assignmentId} setAssignmentId={setAssignmentId}/>)}
+          <FacultyFeatures><AssignmentsControls assignmentId={assignmentId} setAssignmentId={setAssignmentId}/></FacultyFeatures>
         </div>
         <div id="wd-assignments-title" className="wd-title p-3 ps-2 bg-secondary fs-5 fw-bolder mt-5">
           <FacultyFeatures><BsGripVertical className="me-2 fs-3" /></FacultyFeatures>
