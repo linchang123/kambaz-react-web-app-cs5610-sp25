@@ -19,7 +19,6 @@ import FacultyFeatures from "../../Account/FacultyFeatures";
 export default function Assignments() {
     const { cid } = useParams();
     // const assignments = db.assignments;
-    const { currentUser } = useSelector((state: any) => state.accountReducer);
     const { assignments } = useSelector((state: any) => state.assignmentsReducer);
     const [assignmentId, setAssignmentId] = useState(uuidv4());
     // selectedAssignment is shared across all individual Assignment components (select 1 assignment from all the assignments)
