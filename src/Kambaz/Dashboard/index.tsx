@@ -138,7 +138,7 @@ function DashboardTitle({currentUser, courses, enrollments, courseView, setCours
             
     </div>);
   } else {
-    return (<h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2>);
+    return (<h2 id="wd-dashboard-published">Published Courses ({enrolledCourses.length})</h2>);
   }
 }
 
