@@ -117,15 +117,14 @@ const Assignment =
                   className="wd-assignment-link fw-bold text-black text-decoration-none fs-5" >
                   {assignmentTitle}
                  </a> 
-                 <p className="m-0">
+                 <p className="m-0 me-3">
                      <span className="text-danger">Multiple Modules</span> | <span className="fw-bold">Not Available until </span>{assignmentAvailable} | 
-                     <FacultyFeatures><br/></FacultyFeatures>
                      <span className="fw-bold"> Due</span> {assignmentDue} | {assignmentPoints} pts
                  </p>
 
              </div>
              <FacultyFeatures>
-              <div className="d-flex align-items-center ms-3" style={{minWidth: "120px"}}>
+              <div className="d-flex align-items-center ms-auto me-1" style={{minWidth: "120px"}}>
                   <Row>
                       <Col><GreenCheckmark/></Col>
                       <Col><IoEllipsisVertical className="fs-4" /></Col>
