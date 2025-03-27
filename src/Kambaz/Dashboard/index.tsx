@@ -3,50 +3,59 @@ import { Link } from "react-router-dom";
 import {Row, Col, Card} from "react-bootstrap";
 // import * as db from "../Database";
 import { useSelector, useDispatch } from "react-redux";
-import { addCourse, updateCourse, deleteCourse } from "./courseReducer";
+// import { addCourse, updateCourse, deleteCourse } from "./courseReducer";
 import { addEnrollment, deleteEnrollment } from "./enrollmentReducer";
 import { v4 as uuidv4 } from "uuid";
 import FacultyFeatures from "../Account/FacultyFeatures";
 
 export default function Dashboard(
-  // { courses, course, setCourse, addNewCourse,
-  // deleteCourse, updateCourse }: {
-  // courses: any[]; course: any; setCourse: (course: any) => void;
-  // addNewCourse: () => void; deleteCourse: (course: any) => void;
-  // updateCourse: () => void; }
+  { courses, 
+  course, 
+  setCourse, 
+  addNewCourse,
+  deleteCourse, 
+  updateCourse 
+  }: {
+  courses: any[]; 
+  course: any;
+  setCourse: (course: any) => void;
+  addNewCourse: () => void; 
+  deleteCourse: (course: any) => void;
+  updateCourse: () => void; 
+  }
 ) {
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     // const { enrollments } = db;
     const {enrollments} = useSelector((state: any) => state.enrollmentsReducer);
-    const { courses } = useSelector((state: any) => state.coursesReducer);
+    // const { courses } = useSelector((state: any) => state.coursesReducer);
     const dispatch = useDispatch();
     const defaultCourseInfo = {
       _id: "0", name: "New Course", number: "New Number",
       startDate: "2023-09-10", endDate: "2023-12-15",
       image: "/images/reactjs.jpg", description: "New Description"
     }
-    const [course, setCourse] = useState({
-      _id: "0", name: "New Course", number: "New Number",
-      startDate: "2023-09-10", endDate: "2023-12-15",
-      image: "/images/reactjs.jpg", description: "New Description"
-    });
+    // const [course, setCourse] = useState({
+    //   _id: "0", name: "New Course", number: "New Number",
+    //   startDate: "2023-09-10", endDate: "2023-12-15",
+    //   image: "/images/reactjs.jpg", description: "New Description"
+    // });
     const [courseView, setCourseView] = useState(false);
 
-    const addNewCourse = () => {
-      const newCourseId = uuidv4();
-      const enrollment = {_id: uuidv4(), user: currentUser._id, course: newCourseId};
-      dispatch(addCourse({...course, _id: newCourseId}));
-      dispatch(addEnrollment(enrollment));
-      setCourse(defaultCourseInfo);
-    }
-    const updateExistingCourse = () => {
-      dispatch(updateCourse(course));
-      setCourse(defaultCourseInfo);
-    }
-    const deleteExistingCourse = (cid: any) => {
-      dispatch(deleteCourse(cid));
-      setCourse(defaultCourseInfo);
-    }
+    // const addNewCourse = () => {
+    //   const newCourseId = uuidv4();
+    //   const enrollment = {_id: uuidv4(), user: currentUser._id, course: newCourseId};
+    //   dispatch(addCourse({...course, _id: newCourseId}));
+    //   dispatch(addEnrollment(enrollment));
+    //   setCourse(defaultCourseInfo);
+    // }
+    // const updateExistingCourse = () => {
+    //   dispatch(updateCourse(course));
+    //   setCourse(defaultCourseInfo);
+    // }
+    // const deleteExistingCourse = (cid: any) => {
+    //   dispatch(deleteCourse(cid));
+    //   setCourse(defaultCourseInfo);
+    // }
     return (
         <div id="wd-dashboard">
           <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
@@ -57,7 +66,7 @@ export default function Dashboard(
                           id="wd-add-new-course-click"
                           onClick={addNewCourse} > Add </button>
                   <button className="btn btn-warning float-end me-2"
-                      onClick={updateExistingCourse} id="wd-update-course-click">
+                      onClick={updateCourse} id="wd-update-course-click">
                     Update
                   </button>
                 </h5>
@@ -86,7 +95,9 @@ export default function Dashboard(
             </Col>
           ))}
 
-              {courses.filter((c: any) => enrollments.some((enrollment: { user: any; course: any; }) => enrollment.user === currentUser._id && enrollment.course === c._id && !courseView)).map((c: any) => (
+              {courses
+              // .filter((c: any) => enrollments.some((enrollment: { user: any; course: any; }) => enrollment.user === currentUser._id && enrollment.course === c._id && !courseView))
+              .map((c: any) => (
                 <Col className="wd-dashboard-course" style={{ width: "300px" }}>
                   <Card>
                     <Link to={`/Kambaz/Courses/${c._id}/Home`}
@@ -102,7 +113,7 @@ export default function Dashboard(
                           <span id="wd-dashboard-course-control-buttons">
                             <button onClick={(event) => {
                                       event.preventDefault();
-                                      deleteExistingCourse(c._id);
+                                      deleteCourse(c._id);
                                     }} className="btn btn-danger float-end"
                                     id="wd-delete-course-click">
                                     Delete

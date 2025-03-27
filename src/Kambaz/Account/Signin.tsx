@@ -2,15 +2,23 @@ import { Link,useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { setCurrentUser } from "./reducer";
 import { useDispatch } from "react-redux";
-import * as db from "../Database";
+// import * as db from "../Database";
+import * as client from "./client";
 
 export default function Signin() {
+  // "credentials" variable used to edit username and password
   const [credentials, setCredentials] = useState<any>({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const signin = () => {
-    const user = db.users.find(
-      (u: any) => u.username === credentials.username && u.password === credentials.password);
+  const signin = async () => {
+    /**
+     * clicking the signin button posts the credentials to the server
+     * using the "client.signin" function.
+     * when the server responds successfully, the currently logged user
+     * is stored in the user reducer.
+     */
+      const user =  await client.signin(credentials);
+  
     if (!user) return;
     dispatch(setCurrentUser(user));
     navigate("/Kambaz/Dashboard");
