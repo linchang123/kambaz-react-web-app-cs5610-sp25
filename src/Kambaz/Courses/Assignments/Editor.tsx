@@ -2,17 +2,29 @@ import { FormGroup, FormLabel, FormControl, FormSelect, Row, Col } from "react-b
 import { useParams } from "react-router";
 // import assignmentProps from "./AssignmentProps";
 // import * as db from "../../Database";
-import { addAssignment, updateAssignment } from "./reducer";
+import { addAssignment, updateAssignment, setAssignments } from "./reducer";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import * as coursesClient from "../client";
+import * as assignmentClient from "./client";
 
 export default function AssignmentEditor() {
     const { cid = "", aid = "" } = useParams();
+    const dispatch = useDispatch();
     // const assignments = db.assignments;
     const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+    const fetchAssignments = async () => {
+        const assignments = await coursesClient.findAssignmentsForCourse(cid as string);
+        dispatch(setAssignments(assignments));
+    };
+    useEffect(() => {
+            fetchAssignments();
+    }, []);
     for (const a of assignments) {
-        if (a.course === cid && a._id === aid) {
+        if (
+            // a.course === cid && 
+            a._id === aid) {
             return (
                 <Editor
                     courseId={cid}
@@ -71,11 +83,21 @@ const Editor = ( {
         _id: assignmentId, title: assignmentTitle, course: courseId,
         availableFromDate: assignmentAvailable, dueDate: assignmentDue,
         availableTilDate: assignmentTilDate, description: assignmentDetails, points: assignmentPoints}));
-    const handleSave = () => {
+    const handleSave = async() => {
         if (newAssignment) {
-            dispatch(addAssignment(assignmentData));
+            try {
+                await coursesClient.createAssignmentForCourse(assignmentData.course, assignmentData);
+                dispatch(addAssignment(assignmentData));
+            } catch (error: any) {
+                alert(`assignment ${assignmentData.title} is not saved`)
+            }
         } else {
-            dispatch(updateAssignment(assignmentData));
+            try {
+                await assignmentClient.updateAssignment(assignmentData);
+                dispatch(updateAssignment(assignmentData));
+            } catch (error: any) {
+                alert(`assignment ${assignmentData.title} is not saved`)
+            }
         }
         navigate(assignmentURL);
     }

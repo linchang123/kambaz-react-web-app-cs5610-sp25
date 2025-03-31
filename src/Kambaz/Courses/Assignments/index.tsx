@@ -11,18 +11,32 @@ import { useParams } from "react-router";
 // import * as db from "../../Database";
 import { v4 as uuidv4 } from "uuid";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
-import { deleteAssignment } from "./reducer";
+import { deleteAssignment, setAssignments } from "./reducer";
+import * as coursesClient from "../client";
+import * as assignmentsClient from "./client";
 import FacultyFeatures from "../../Account/FacultyFeatures";
 
 export default function Assignments() {
     const { cid } = useParams();
+    const dispatch = useDispatch();
     // const assignments = db.assignments;
     const { assignments } = useSelector((state: any) => state.assignmentsReducer);
     const [assignmentId, setAssignmentId] = useState(uuidv4());
     // selectedAssignment is shared across all individual Assignment components (select 1 assignment from all the assignments)
-    const [selectedAssignment, setSelectedAssignment] = useState({_id: "", title: ""})
+    const [selectedAssignment, setSelectedAssignment] = useState({_id: "", title: ""});
+    const fetchAssignments = async () => {
+      try {
+        const assignments = await coursesClient.findAssignmentsForCourse(cid as string);
+        dispatch(setAssignments(assignments));
+      } catch (error: any) {
+        alert("error occurs in fetching assignments")
+      }
+    };
+    useEffect(() => {
+          fetchAssignments();
+    }, []);
     return (
       <div id="wd-assignments">
         <div className="text-nowrap">
@@ -48,10 +62,10 @@ export default function Assignments() {
             ))
           } */}
           {assignments
-          .filter((assignment: any) => assignment.course === cid)
+          // .filter((assignment: any) => assignment.course === cid)
           .map((assignment: any) => (
             <Assignment assignmentTitle={assignment.title} assignmentId={assignment._id}
-            assignmentAvailable={formatDate(assignment.availableFromDate) + "at 12:00am"} 
+            assignmentAvailable={assignment.availableFromDate} 
             assignmentDue={formatDate(assignment.dueDate) + " at 11:59pm"}
             assignmentURL={"#/Kambaz/Courses/" + cid + "/Assignments/" + assignment._id}
             assignmentPoints={assignment.points}
@@ -69,7 +83,7 @@ export default function Assignments() {
   
 const Assignment = 
 // ({assignmentTitle, assignmentAvailable,assignmentDue, assignmentURL}: assignmentProps) 
-    ({assignmentTitle, assignmentAvailable,assignmentDue, assignmentURL, assignmentPoints, setSelectedAssignment, assignmentId}: {
+    ({assignmentTitle, assignmentAvailable,assignmentDue, assignmentURL, assignmentPoints, setSelectedAssignment, assignmentId, assignmentTilDate}: {
         assignmentTitle: string;
         assignmentAvailable:string;
         assignmentDue: string;
@@ -118,7 +132,8 @@ const Assignment =
                   {assignmentTitle}
                  </a> 
                  <p className="m-0 me-3">
-                     <span className="text-danger">Multiple Modules</span> | <span className="fw-bold">Not Available until </span>{assignmentAvailable} | 
+                     <span className="text-danger">Multiple Modules</span> | 
+                     <span className="fw-bold"><Availability availableFrom={assignmentAvailable} availableTil={assignmentTilDate}/></span> | 
                      <span className="fw-bold"> Due</span> {assignmentDue} | {assignmentPoints} pts
                  </p>
 
@@ -145,7 +160,15 @@ const Assignment =
 
 function DeleteAssignment({ dialogTitle, selectedAssignment }:
     { dialogTitle: string; selectedAssignment: any; }) {
-        const dispatch = useDispatch();
+      const removeAssignment = async () => {
+        try {
+          await assignmentsClient.deleteAssignment(selectedAssignment._id);
+          dispatch(deleteAssignment(selectedAssignment._id));
+        } catch (error: any) {
+          alert(`assignment ${selectedAssignment.title} is not removed`)
+        }
+      };  
+      const dispatch = useDispatch();
       return (
         <div id="wd-delete-assignment-dialog" className="modal fade" data-bs-backdrop="static" data-bs-keyboard="false">
           <div className="modal-dialog">
@@ -158,7 +181,7 @@ function DeleteAssignment({ dialogTitle, selectedAssignment }:
                 <p>Are you sure to remove {selectedAssignment.title} ?</p>
               </div>
               <div className="modal-footer">
-              <button onClick={() => {dispatch(deleteAssignment(selectedAssignment._id));}} type="button" data-bs-dismiss="modal" className="btn btn-danger">
+              <button onClick={removeAssignment} type="button" data-bs-dismiss="modal" className="btn btn-danger">
               Yes </button>
                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
                   No </button>
@@ -183,9 +206,24 @@ function formatDate(date: string) {
     const dateTime = date + " 12:00:00";
     const customDate = new Date(dateTime); 
     const options: Intl.DateTimeFormatOptions = {
-        month: 'long',
+        month: 'short',
         day: 'numeric'
     };
     const formattedDate: string = customDate.toLocaleDateString(undefined, options);
     return formattedDate;
+}
+
+const Availability = ({availableFrom, availableTil} : {availableFrom: string, availableTil: string}) => {
+  const af = new Date(availableFrom);
+  const at = new Date(availableTil);
+  const currDate = new Date(); 
+  if (at < currDate) {
+      return(<strong> Closed </strong>);
+  } else if (af <= currDate && currDate <= at) {
+      return(<strong> Available</strong>)
+  } else if (currDate < af) {
+      return(<span><strong> Not Available until </strong>{formatDate(availableFrom)}</span>)
+  } else {
+    return(<strong> Not Available </strong>)
+  }
 }

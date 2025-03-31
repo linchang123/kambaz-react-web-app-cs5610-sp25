@@ -47,7 +47,22 @@ export const findMyCourses = async () => {
   return data;
 };
 
+export const findMyEnrollments = async () => {
+  const { data } = await axiosWithCredentials.get(`${USERS_API}/current/enrollments`);
+  return data;
+};
+
 export const createCourse = async (course: any) => {
   const { data } = await axiosWithCredentials.post(`${USERS_API}/current/courses`, course);
   return data;
 };
+
+export const enrollCourse = async (courseId: any) => {
+  const { data } = await axiosWithCredentials.post(`${USERS_API}/enroll`, courseId);
+  return data;
+};
+
+export const findAllUsers = async () => {
+  const {data} = await axios.get(USERS_API);
+  return data;
+}

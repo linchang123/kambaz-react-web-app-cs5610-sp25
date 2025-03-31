@@ -5,7 +5,7 @@ import LessonControlButtons from "./LessonControlButtons";
 import { useParams } from "react-router";
 // import * as db from "../../Database";
 import { useEffect, useState } from "react";
-// import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import { addModule, editModule, updateModule, deleteModule, setModules }
   from "./reducer";
 import * as modulesClient from "./client";
@@ -40,7 +40,7 @@ export default function Modules() {
     };
     const createModuleForCourse = async () => {
       if (!cid) return;
-      const newModule = { name: moduleName, course: cid };
+      const newModule = { name: moduleName, course: cid, lessons: [], _id: uuidv4()};
       const module = await coursesClient.createModuleForCourse(cid, newModule);
       dispatch(addModule(module));
       setModuleName("");
@@ -75,15 +75,13 @@ export default function Modules() {
               { // if the module's editing field is True, the input field for editing the module name is displayed
               module.editing && (
                 <input className="form-control w-50 d-inline-block"
-                      onChange={(e) => dispatch(
-                        updateModule({ ...module, name: e.target.value })
-                      )}
+                      onChange={(e) => saveModule({ ...module, name: e.target.value })}
                       onKeyDown={(e) => {
                         // when the "Enter" key is pressed on the keyboard, the module's editing field is set to False
                         // and the editor window will be hidden
                         if (e.key === "Enter") {
                           // dispatch(updateModule({ ...module, editing: false }));
-                          saveModule({ ...module, editing: false });
+                          saveModule({ ...module,editing: false });
 
                         }
                       }}

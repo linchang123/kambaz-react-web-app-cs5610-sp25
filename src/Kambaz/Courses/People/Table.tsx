@@ -1,21 +1,71 @@
-import { FaUserCircle } from "react-icons/fa";
-import * as db from "../../Database";
+import { useEffect, useState } from "react";
+import { FaPlus, FaUserCircle } from "react-icons/fa";
+import * as coursesClient from "../client";
+import * as userClient from "../../Account/client";
+import * as enrollmentClient from "../../Dashboard/enrollmentClient";
+// import * as db from "../../Database";
 import { useParams } from "react-router-dom";
+import FacultyFeatures from "../../Account/FacultyFeatures";
+import { Modal } from "react-bootstrap";
 
 export default function PeopleTable() {
   const { cid } = useParams();
-  const { users, enrollments } = db;
+  // const { users, enrollments } = db;
+  const [users, setUsers] = useState<any[]>([]);
+  const [enrolledUsers, setEnrolledUsers] = useState<any>([])
+  const fetchAllUsers = async () => {
+    try {
+      const users = await userClient.findAllUsers();
+      setUsers(users);
+    }catch (error: any) {
+      alert("error occur in fetching all users");
+    }
+  }
+  const fetchEnrolledUsers = async () => {
+    try {
+      const enrolledUsers = await coursesClient.findEnrolledStudentForCourse(cid as string);
+      setEnrolledUsers([...enrolledUsers]);
+    } catch (error: any) {
+      alert("error occurs in fetching enrolled student")
+    }
+  };
+  const handleUnenroll = async (userId: string) => {
+    await enrollmentClient.unenrollUserFromCourse(userId, cid || "");
+    // setEnrolledUsers((prev: any[]) => prev.filter(user => user._id !== userId));
+    await fetchEnrolledUsers();
+    // setTimeout(fetchEnrolledUsers, 500); 
+  };
+  const handleEnroll = async (userId: string) => {
+    await enrollmentClient.enrollUserFromCourse(userId, cid || "");
+    // setEnrolledUsers((prev: any[]) => prev.filter(user => user._id !== userId));
+    // setTimeout(fetchEnrolledUsers, 500); 
+    await fetchEnrolledUsers();
+  };
+  useEffect(() => {
+    fetchEnrolledUsers();
+  }, []);
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = async() => {
+    await fetchAllUsers();
+    setShow(true)};
  return (
-  <div id="wd-people-table">
+  <div id="wd-people-table" className="display-block">
+    <FacultyFeatures>
+      <button data-bs-toggle="modal" data-bs-target="#wd-manage-enrollment-dialog" 
+    type="button" className="float-end m-3 btn btn-danger btn-lg" onClick={handleShow}>
+      <FaPlus/> Manage Enrollment
+      </button>
+    </FacultyFeatures>
    <table className="table table-striped">
     <thead>
      <tr><th>Name</th><th>Login ID</th><th>Section</th><th>Role</th><th>Last Activity</th><th>Total Activity</th></tr>
     </thead>
     <tbody>
-    {users
-    .filter((usr) =>
-      enrollments.some((enrollment) => enrollment.user === usr._id && enrollment.course === cid)
-    )
+    {enrolledUsers
+    // .filter((usr) =>
+    //   enrollments.some((enrollment) => enrollment.user === usr._id && enrollment.course === cid)
+    // )
     .map((user: any) => (
       <tr key={user._id}>
         <td className="wd-full-name text-nowrap">
@@ -33,7 +83,44 @@ export default function PeopleTable() {
 
     </tbody>
    </table>
+   <EnrollmentEditor show={show} handleClose={handleClose} dialogTitle="Manage Enrollment" 
+   enrolledStudents={enrolledUsers} users={users} handleUnenroll={handleUnenroll} handleEnroll={handleEnroll}/>
   </div> );}
+
+
+export function EnrollmentEditor({ show, handleClose, dialogTitle, enrolledStudents, users, handleUnenroll, handleEnroll}: {
+  show: boolean; handleClose: () => void; dialogTitle: string; enrolledStudents: any; users: any; 
+  handleUnenroll: (courseId: string) => void; handleEnroll: (courseId: string) => void;
+  }) {
+  return (
+   <Modal show={show} onHide={handleClose}>
+    <Modal.Header closeButton>
+     <Modal.Title>{dialogTitle}</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+      <table>
+        <tbody>
+          {users.map((user: any) => (
+            <tr className="my-5 text-nowrap">
+              <td>{`${user.firstName} ${user.lastName}`}</td>
+              <td className="ps-5">{`${user.loginId}`}</td>
+              <td className="text-center">
+                  {enrolledStudents.some((student: any) => student._id === user._id) ? 
+                  (<button className="ms-5 btn btn-md btn-danger text-nowrap" onClick={() => handleUnenroll(user._id)}>Unenroll Student </button>): 
+                 ( <button className="ms-5 btn btn-md btn-success" onClick={() => handleEnroll(user._id)}>Enroll Student</button>)}
+                
+              </td>
+            </tr>
+
+          ))}
+        </tbody>
+      </table>
+    </Modal.Body>
+    {/* <Modal.Footer>
+     <Button variant="secondary" onClick={handleClose}> Close </Button>
+    </Modal.Footer> */}
+   </Modal>
+ );}
 /**
  * {
  * <tr><td className="wd-full-name text-nowrap">
