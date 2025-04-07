@@ -4,7 +4,7 @@ import * as coursesClient from "../client";
 import * as userClient from "../../Account/client";
 import * as enrollmentClient from "../../Dashboard/enrollmentClient";
 // import * as db from "../../Database";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import FacultyFeatures from "../../Account/FacultyFeatures";
 import { Modal } from "react-bootstrap";
 
@@ -24,7 +24,8 @@ export default function PeopleTable() {
   const fetchEnrolledUsers = async () => {
     try {
       const enrolledUsers = await coursesClient.findEnrolledStudentForCourse(cid as string);
-      setEnrolledUsers([...enrolledUsers]);
+      // setEnrolledUsers([...enrolledUsers]);
+      setEnrolledUsers(enrolledUsers);
     } catch (error: any) {
       alert("error occurs in fetching enrolled student")
     }
@@ -51,6 +52,7 @@ export default function PeopleTable() {
     setShow(true)};
  return (
   <div id="wd-people-table" className="display-block">
+    {/* <PeopleDetails /> */}
     <FacultyFeatures>
       <button data-bs-toggle="modal" data-bs-target="#wd-manage-enrollment-dialog" 
     type="button" className="float-end m-3 btn btn-danger btn-lg" onClick={handleShow}>
@@ -69,9 +71,11 @@ export default function PeopleTable() {
     .map((user: any) => (
       <tr key={user._id}>
         <td className="wd-full-name text-nowrap">
-          <FaUserCircle className="me-2 fs-1 text-secondary" />
-          <span className="wd-first-name">{user.firstName}</span>
-          <span className="wd-last-name">{user.lastName}</span>
+          {/* <Link to={`/Kambaz/Account/Users/${user._id}`} className="text-decoration-none"> */}
+            <FaUserCircle className="me-2 fs-1 text-secondary" />
+            <span className="wd-first-name">{user.firstName + " "}</span>
+            <span className="wd-last-name">{user.lastName}</span>
+          {/* </Link> */}
         </td>
         <td className="wd-login-id">{user.loginId}</td>
         <td className="wd-section">{user.section}</td>
