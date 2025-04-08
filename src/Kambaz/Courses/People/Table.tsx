@@ -4,7 +4,7 @@ import * as coursesClient from "../client";
 import * as userClient from "../../Account/client";
 import * as enrollmentClient from "../../Dashboard/enrollmentClient";
 // import * as db from "../../Database";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import FacultyFeatures from "../../Account/FacultyFeatures";
 import { Modal } from "react-bootstrap";
 

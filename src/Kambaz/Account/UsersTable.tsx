@@ -1,5 +1,5 @@
 import { FaUserCircle } from "react-icons/fa";
-import * as client from "./client";
+// import * as client from "./client";
 import PeopleDetails from "../Courses/People/Details";
 import { Link } from "react-router";
 // import * as db from "../Database";
