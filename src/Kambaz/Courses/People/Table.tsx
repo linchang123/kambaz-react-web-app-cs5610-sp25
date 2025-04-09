@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { FaPlus, FaUserCircle } from "react-icons/fa";
 import * as coursesClient from "../client";
 import * as userClient from "../../Account/client";
-import * as enrollmentClient from "../../Dashboard/enrollmentClient";
 // import * as db from "../../Database";
 import { useParams } from "react-router-dom";
 import FacultyFeatures from "../../Account/FacultyFeatures";
@@ -23,7 +22,7 @@ export default function PeopleTable() {
   }
   const fetchEnrolledUsers = async () => {
     try {
-      const enrolledUsers = await coursesClient.findEnrolledStudentForCourse(cid as string);
+      const enrolledUsers = await coursesClient.findUsersForCourse(cid as string);
       // setEnrolledUsers([...enrolledUsers]);
       setEnrolledUsers(enrolledUsers);
     } catch (error: any) {
@@ -31,13 +30,13 @@ export default function PeopleTable() {
     }
   };
   const handleUnenroll = async (userId: string) => {
-    await enrollmentClient.unenrollUserFromCourse(userId, cid || "");
+    await userClient.unenrollFromCourse(userId, cid || "");
     // setEnrolledUsers((prev: any[]) => prev.filter(user => user._id !== userId));
     await fetchEnrolledUsers();
     // setTimeout(fetchEnrolledUsers, 500); 
   };
   const handleEnroll = async (userId: string) => {
-    await enrollmentClient.enrollUserFromCourse(userId, cid || "");
+    await userClient.enrollIntoCourse(userId, cid || "");
     // setEnrolledUsers((prev: any[]) => prev.filter(user => user._id !== userId));
     // setTimeout(fetchEnrolledUsers, 500); 
     await fetchEnrolledUsers();
